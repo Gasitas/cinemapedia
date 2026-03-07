@@ -42,7 +42,8 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     return Column(
       children: [
         CustomAppbar(),
-        MoviesSlideshow(movies: movies), // Mostramos el slideshow de películas en cartelera utilizando el widget MoviesSlideshow y pasando la lista de películas obtenida del provider movieSlideshowProvider. De esta manera, se mostrará el slideshow con las películas en cartelera al usuario.
+        MoviesSlideshow(movies: movies),
+        MoviesHorizontalSlideshow(movies: movies, title: 'Películas en Cartelera', subtitle: 'Lunes 20',) // Mostramos el slideshow de películas en cartelera utilizando el widget MoviesSlideshow y pasando la lista de películas obtenida del provider movieSlideshowProvider. De esta manera, se mostrará el slideshow con las películas en cartelera al usuario.
       ],
     );
     // Obtenemos la lista de películas en cartelera utilizando el provider nowPlayingMoviesProvider. Esto nos permite acceder a la lista de películas que se ha cargado en el MoviesNotifier y mostrarla en la UI. 
