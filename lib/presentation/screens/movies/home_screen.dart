@@ -36,15 +36,28 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final movies = ref.watch(movieSlideshowProvider);  // Obtenemos la lista de películas en cartelera utilizando el provider movieSlideshowProvider. Esto nos permite acceder a la lista de películas que se ha cargado en el MoviesNotifier y mostrarla en el slideshow de la UI.
+    final movies = ref.watch(movieSlideshowProvider);
+    final nowPlaying = ref.watch(nowPlayingMoviesProvider);  // Obtenemos la lista de películas en cartelera utilizando el provider movieSlideshowProvider. Esto nos permite acceder a la lista de películas que se ha cargado en el MoviesNotifier y mostrarla en el slideshow de la UI.
 
     
-    return Column(
-      children: [
-        CustomAppbar(),
-        MoviesSlideshow(movies: movies),
-        MoviesHorizontalSlideshow(movies: movies, title: 'Películas en Cartelera', subtitle: 'Lunes 20',) // Mostramos el slideshow de películas en cartelera utilizando el widget MoviesSlideshow y pasando la lista de películas obtenida del provider movieSlideshowProvider. De esta manera, se mostrará el slideshow con las películas en cartelera al usuario.
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          CustomAppbar(),
+          MoviesSlideshow(movies: movies),
+          MoviesHorizontalSlideshow(
+            movies: nowPlaying, title: 'Películas en Cartelera', 
+            subtitle: 'Lunes 20',
+            onNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage()
+          ),
+           MoviesHorizontalSlideshow(
+            movies: nowPlaying, title: 'Películas en Cartelera', 
+            subtitle: 'Lunes 20',
+            onNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage()
+          ),
+          // Mostramos el slideshow de películas en cartelera utilizando el widget MoviesSlideshow y pasando la lista de películas obtenida del provider movieSlideshowProvider. De esta manera, se mostrará el slideshow con las películas en cartelera al usuario.
+        ],
+      ),
     );
     // Obtenemos la lista de películas en cartelera utilizando el provider nowPlayingMoviesProvider. Esto nos permite acceder a la lista de películas que se ha cargado en el MoviesNotifier y mostrarla en la UI. 
     //return Placeholder();

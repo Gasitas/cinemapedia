@@ -20,31 +20,58 @@ class MoviesHorizontalSlideshow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 320,
+      height: 340,
       child: Column(
         children: [
           if (title != null || subtitle != null)
             _Title(title: title, subtitle: subtitle),
-          Expanded(child: _ListMovies(movies: movies)),
+          Expanded(child: _ListMovies(movies: movies, onNextPage: onNextPage)),
         ],
       ),
     );
   }
 }
 
-class _ListMovies extends StatelessWidget {
-  const _ListMovies({required this.movies});
+class _ListMovies extends StatefulWidget {
+  const _ListMovies({required this.movies, this.onNextPage});
 
   final List<Movie> movies;
+  final VoidCallback? onNextPage;
 
+  @override
+  State<_ListMovies> createState() => _ListMoviesState();
+}
+
+class _ListMoviesState extends State<_ListMovies> {
+
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (widget.onNextPage == null) return ;
+      if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 500) {
+        // Llamamos al callback onNextPage para cargar la siguiente página de películas cuando el usuario se acerque al final del scroll.
+        widget.onNextPage?.call();
+      }
+    });
+  }
+
+  @override
+  dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
+      controller: scrollController,
       scrollDirection: Axis.horizontal,
-      itemCount: movies.length,
+      itemCount: widget.movies.length,
       itemBuilder: (context, index) {
-        final movie = movies[index];
+        final movie = widget.movies[index];
         return _SlideMovies(movie: movie);
       },
     );
