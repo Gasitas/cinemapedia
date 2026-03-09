@@ -59,7 +59,9 @@ class MoviedbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Movie>> getUpcoming({int page = 1}) async {
-     final Response response = await dio.get('/movie/upcoming', queryParameters: {
+     final Response response = 
+     
+     await dio.get('/movie/upcoming', queryParameters: {
       'page': page,
     });
     List<Movie> movies = _jsonToMovies(response); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 

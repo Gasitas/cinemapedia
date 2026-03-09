@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MoviesHorizontalSlideshow extends StatelessWidget {
   final List<Movie> movies;
@@ -103,7 +104,12 @@ class _SlideMovies extends StatelessWidget {
                 movie.posterPath,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return FadeIn(child: child);
+                  if (loadingProgress == null) {
+                    return GestureDetector(child: FadeIn(child: child), onTap: () {
+                    // Navegamos a la pantalla de detalles de la película al hacer tap en la imagen. Para esto, utilizamos el widget GestureDetector para detectar el evento de tap y luego navegamos a la pantalla de detalles utilizando el Navigator.pushNamed, pasando el ID de la película como argumento.
+                    context.push('/movie/${movie.id}'); // Navegamos a la pantalla de detalles de la película utilizando el Navigator.pushNamed, pasando el ID de la película como argumento en la ruta. 
+                  },);
+                  }
                   return Container(
                     padding: const EdgeInsets.all(8),
                     child: const Center(child: CircularProgressIndicator()),
