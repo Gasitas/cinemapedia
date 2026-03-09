@@ -30,12 +30,19 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
     ref
         .read(nowPlayingMoviesProvider.notifier)
-        .loadNextPage(); // Cargamos la primera página de películas populares al iniciar la pantalla. Esto se hace llamando al método loadNextPage() del MoviesNotifier a través del provider popularMoviesProvider. De esta manera, cuando se muestre la pantalla, ya se tendrán cargadas las películas populares para mostrar al usuario.
+        .loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+     // Cargamos la primera página de películas populares al iniciar la pantalla. Esto se hace llamando al método loadNextPage() del MoviesNotifier a través del provider popularMoviesProvider. De esta manera, cuando se muestre la pantalla, ya se tendrán cargadas las películas populares para mostrar al usuario.
   }
 
   @override
   Widget build(BuildContext context) {
     final movies = ref.watch(movieSlideshowProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
     final nowPlaying = ref.watch(
       nowPlayingMoviesProvider,
     ); // Obtenemos la lista de películas en cartelera utilizando el provider movieSlideshowProvider. Esto nos permite acceder a la lista de películas que se ha cargado en el MoviesNotifier y mostrarla en el slideshow de la UI.
@@ -43,9 +50,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          floating: true,
-
-          
+          floating: true,          
             flexibleSpace: FlexibleSpaceBar(
               background: Container (alignment: Alignment.center, child: CustomAppbar(),)
             )
@@ -66,11 +71,27 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                       .loadNextPage(),
                 ),
                 MoviesHorizontalSlideshow(
-                  movies: nowPlaying,
-                  title: 'Populares',
+                  movies: upcomingMovies,
+                  title: 'Próximas a Estrenarse',
+                  subtitle: 'próximamente',
+                  onNextPage: () => ref
+                      .read(upcomingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
+                MoviesHorizontalSlideshow(
+                  movies: popularMovies,
+                  title: 'Películas Populares',
                   subtitle: 'En este mes',
                   onNextPage: () => ref
-                      .read(nowPlayingMoviesProvider.notifier)
+                      .read(popularMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
+                 MoviesHorizontalSlideshow(
+                  movies: topRatedMovies,
+                  title: 'Mejores películas',
+                  subtitle: 'Históricas',
+                  onNextPage: () => ref
+                      .read(topRatedMoviesProvider.notifier)
                       .loadNextPage(),
                 ),
                 SizedBox(height: 20),

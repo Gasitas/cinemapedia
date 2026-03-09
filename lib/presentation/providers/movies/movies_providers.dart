@@ -21,6 +21,24 @@ final popularMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>
   );
 });
 
+final topRatedMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref)
+{
+  final loadMovies = ref.watch(movieRepositoryProvider).getTopRated; // Obtenemos la función de carga de películas mejor valoradas (getTopRated) del repositorio de películas utilizando el provider movieRepositoryProvider. Esto nos permite inyectar la lógica de carga de películas en el MoviesNotifier, lo que facilita la reutilización y el mantenimiento del código.
+
+  return MoviesNotifier(
+      loadMovies: loadMovies
+  );
+});
+
+final upcomingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref)
+{
+  final loadMovies = ref.watch(movieRepositoryProvider).getUpcoming; // Obtenemos la función de carga de películas próximas a estrenarse (getUpcoming) del repositorio de películas utilizando el provider movieRepositoryProvider. Esto nos permite inyectar la lógica de carga de películas en el MoviesNotifier, lo que facilita la reutilización y el mantenimiento del código.
+
+  return MoviesNotifier(
+      loadMovies: loadMovies
+  );
+});
+
 typedef LoadMoviesCallback = Future<List<Movie>> Function({int page}); // Definimos un tipo de función llamado LoadMoviesCallback que representa una función asíncrona que devuelve una lista de películas (List<Movie>) y acepta un parámetro opcional page de tipo int. Este tipo de función se utilizará para cargar las películas en la clase MoviesNotifier, permitiendo que se pueda inyectar la lógica de carga de películas desde fuera de la clase, lo que facilita la reutilización y el mantenimiento del código.
 
 class MoviesNotifier extends StateNotifier <List<Movie>>{

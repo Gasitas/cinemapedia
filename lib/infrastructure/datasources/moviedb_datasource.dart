@@ -22,11 +22,16 @@ class MoviedbDatasource extends MoviesDatasource {
     final Response response = await dio.get('/movie/now_playing', queryParameters: {
       'page': page,
     });
+    List<Movie> movies = _jsonToMovies(response); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
+    
+    return movies;
+  }
+
+  List<Movie> _jsonToMovies(Response<dynamic> response) {
     final MoviesDbResponse moviesDbResponse = MoviesDbResponse.fromJson(response.data); // Convertir la respuesta JSON a MoviesDbResponse
     final List<Movie> movies = moviesDbResponse.results
       .where((moviedb) => moviedb.posterPath != 'no-poster') // Filtrar solo las películas que tienen posterPath distinto de 'no-poster'
       .map((movieDB) => MovieMapper.fromMovieDBToEntity(movieDB)).toList(); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
-    
     return movies;
   }
 
@@ -36,22 +41,31 @@ class MoviedbDatasource extends MoviesDatasource {
     final Response response = await dio.get('/movie/popular', queryParameters: {
       'page': page,
     });
-    final MoviesDbResponse moviesDbResponse = MoviesDbResponse.fromJson(response.data); // Convertir la respuesta JSON a MoviesDbResponse
-    final List<Movie> movies = moviesDbResponse.results
-      .where((moviedb) => moviedb.posterPath != 'no-poster') // Filtrar solo las películas que tienen posterPath distinto de 'no-poster'
-      .map((movieDB) => MovieMapper.fromMovieDBToEntity(movieDB)).toList(); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
+        List<Movie> movies = _jsonToMovies(response); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
+
     
     return movies;
   }
 
   @override
-  Future<List<Movie>> getTopRated({int page = 1}) {
-    return Future.value([]);
+  Future<List<Movie>> getTopRated({int page = 1}) async {
+    final Response response = await dio.get('/movie/top_rated', queryParameters: {
+      'page': page,
+    });
+    List<Movie> movies = _jsonToMovies(response); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
+
+    return movies;
   }
 
   @override
-  Future<List<Movie>> getUpcoming({int page = 1}) {
-    return Future.value([]);
+  Future<List<Movie>> getUpcoming({int page = 1}) async {
+     final Response response = await dio.get('/movie/upcoming', queryParameters: {
+      'page': page,
+    });
+    List<Movie> movies = _jsonToMovies(response); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
+
+    
+    return movies;
   }
 
 

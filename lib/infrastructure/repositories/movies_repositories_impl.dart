@@ -21,13 +21,13 @@ class MoviesRepositoriesImpl extends MoviesRepository {
 
   @override
   Future<List<Movie>> getTopRated({int page = 1}) {
-    return Future.value([]);
+    return datasource.getTopRated(page: page); // Delegar la llamada al datasource para obtener las películas mejor valoradas
     
   }
 
   @override
   Future<List<Movie>> getUpcoming({int page = 1}) {
-    return Future.value([]);
+    return datasource.getUpcoming(page: page); // Delegar la llamada al datasource para obtener las películas próximas a estrenarse
   }
 
 
