@@ -47,6 +47,11 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       nowPlayingMoviesProvider,
     ); // Obtenemos la lista de películas en cartelera utilizando el provider movieSlideshowProvider. Esto nos permite acceder a la lista de películas que se ha cargado en el MoviesNotifier y mostrarla en el slideshow de la UI.
 
+    final isLoading = ref.watch(initialLoadingProvider);
+    if (isLoading) {
+      return FullScreenLoader();
+    }
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(

@@ -72,7 +72,7 @@ class _ListMoviesState extends State<_ListMovies> {
       itemCount: widget.movies.length,
       itemBuilder: (context, index) {
         final movie = widget.movies[index];
-        return _SlideMovies(movie: movie);
+        return FadeInRight(child: _SlideMovies(movie: movie));
       },
     );
   }
