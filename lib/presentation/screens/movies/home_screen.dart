@@ -47,7 +47,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       nowPlayingMoviesProvider,
     ); 
     
-    final actualMovie = ref.watch(movieProvider); // Obtenemos la película seleccionada utilizando el provider movieProvider. Esto nos permite acceder a la película que el usuario ha seleccionado y mostrar sus detalles en  la UI.
 
     final isLoading = ref.watch(initialLoadingProvider);
     if (isLoading) {
