@@ -3,6 +3,8 @@ import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+final movieProvider = StateProvider<Movie?>((ref) => null); // Provider para almacenar la película seleccionada por el usuario. Inicialmente, se establece como null, lo que indica que no hay ninguna película seleccionada. Este provider se puede utilizar en la UI para mostrar los detalles de la película seleccionada o para realizar otras acciones relacionadas con la película seleccionada.
+
 final nowPlayingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref)
 {
   final loadMovies = ref.watch(movieRepositoryProvider).getNowPlaying; // Obtenemos la función de carga de películas en cartelera (getNowPlaying) del repositorio de películas utilizando el provider movieRepositoryProvider. Esto nos permite inyectar la lógica de carga de películas en el MoviesNotifier, lo que facilita la reutilización y el mantenimiento del código.
@@ -11,6 +13,7 @@ final nowPlayingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movi
       loadMovies: loadMovies
   );
 });
+
 
 final popularMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref)
 {

@@ -45,7 +45,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
     final nowPlaying = ref.watch(
       nowPlayingMoviesProvider,
-    ); // Obtenemos la lista de películas en cartelera utilizando el provider movieSlideshowProvider. Esto nos permite acceder a la lista de películas que se ha cargado en el MoviesNotifier y mostrarla en el slideshow de la UI.
+    ); 
+    
+    final actualMovie = ref.watch(movieProvider); // Obtenemos la película seleccionada utilizando el provider movieProvider. Esto nos permite acceder a la película que el usuario ha seleccionado y mostrar sus detalles en  la UI.
 
     final isLoading = ref.watch(initialLoadingProvider);
     if (isLoading) {

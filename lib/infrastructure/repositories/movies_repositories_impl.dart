@@ -30,5 +30,10 @@ class MoviesRepositoriesImpl extends MoviesRepository {
     return datasource.getUpcoming(page: page); // Delegar la llamada al datasource para obtener las películas próximas a estrenarse
   }
 
+  @override
+  Future<Movie> getMovieById(String id) {
+    return datasource.getMovieById(id); // Delegar la llamada al datasource para obtener los detalles de una película por su ID
+  }
+
 
 }
