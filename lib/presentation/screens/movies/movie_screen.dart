@@ -57,7 +57,7 @@ class _MovieDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    //final size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     final textStyles = Theme.of(context).textTheme;
 
     return Container(
@@ -65,11 +65,30 @@ class _MovieDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.all(8)),
-          Text(movie.title, style: textStyles.titleLarge, textAlign: TextAlign.left),
-          SizedBox(height: 10,),
-          Text(movie.overview),
-          SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(movie.posterPath, width: size.width * 0.3,)),
+              //Padding(padding: EdgeInsets.all(8)),
+              Container(
+                padding: const EdgeInsets.only(left: 10),
+                width: (size.width-40) *0.7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //Text(movie.title, style: textStyles.headlineSmall, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                    Text(movie.overview, style: textStyles.bodyMedium),
+                  ],
+                ),
+              )
+
+            ],
+          ),
+
+          
           Padding(padding:  EdgeInsets.all(8),
           child: Wrap(
             spacing: 10,
@@ -98,19 +117,19 @@ class _CustomSliverAppBar extends StatelessWidget {
     
     return SliverAppBar(
       backgroundColor: Colors.black,
-      expandedHeight: size.height*0.5,
+      expandedHeight: size.height*0.3,
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        /*title: Text(movie.title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        title: Text(movie.title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
           textAlign: TextAlign.start,
-        ),*/
+        ),
         background: Stack(
           children: [
             SizedBox.expand(
               child: Image.network(
-                movie.posterPath,
+                movie.backdropPath,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
@@ -129,9 +148,9 @@ class _CustomSliverAppBar extends StatelessWidget {
                           Colors.black87,
                           Colors.transparent,
                           Colors.transparent,
-                          Colors.black87,
+                          Colors.white,
                         ],
-                        stops: const [ 0, 0.3, 0.8, 1],
+                        stops: const [ 0, 0.3, 0.5, 1],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       )
