@@ -78,8 +78,8 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 ),
                 MoviesHorizontalSlideshow(
                   movies: upcomingMovies,
-                  title: 'Próximas a Estrenarse',
-                  subtitle: 'próximamente',
+                  title: 'Próximamente',
+                  subtitle: 'en breve',
                   onNextPage: () => ref
                       .read(upcomingMoviesProvider.notifier)
                       .loadNextPage(),

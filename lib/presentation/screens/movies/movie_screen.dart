@@ -1,3 +1,5 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/domain/entities/cast.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +38,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
       );
     }
 
-    final casts = ref.watch(getCast);
-    print('📋 Casts: ${casts.map((c) => c.name).toList()}'); 
+
     return Scaffold(
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
@@ -48,6 +49,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
               (context, index) => _MovieDetails(actualMovie),
               childCount: 1,
             ),
+
           )
         ],
       )
@@ -55,15 +57,18 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
-class _MovieDetails extends StatelessWidget {
+class _MovieDetails extends ConsumerWidget {
   final Movie movie;
   const _MovieDetails(this.movie);
 
+  
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
 
     final size = MediaQuery.of(context).size;
     final textStyles = Theme.of(context).textTheme;
+    final cast = ref.watch(getCast);
 
     return Container(
       padding: const EdgeInsets.all(8),
@@ -101,11 +106,64 @@ class _MovieDetails extends StatelessWidget {
               ...movie.genreIds.map((genre) => Chip(label: Text(genre))),
             ],
           ),),
+          const SizedBox(height: 10,),
+          const Text('Reparto', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10,),
+          SizedBox(
+            height: 140,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: cast.length,
+              itemBuilder: (context, index) => _ActorCard(actor: cast[index]),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+class _ActorCard extends StatelessWidget {
+  final Cast actor;
+  const _ActorCard({required this.actor});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasPhoto = actor.profilePath != null && actor.profilePath!.isNotEmpty;
+
+    final imageUrl = hasPhoto
+        ? 'https://image.tmdb.org/t/p/w500${actor.profilePath}' // ← clave
+        : null;
+
+    return FadeIn(
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: imageUrl != null
+                ? Image.network(
+                    imageUrl,
+                    height: 100,
+                    width: 90,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.person, size: 60),
+                  )
+                : const SizedBox(
+                    height: 100,
+                    width: 90,
+                    child: Icon(Icons.person, size: 60),
+                  ),
+          ),
+          Text(actor.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center),
+        ],
+      ),
+    );
+  }
+}
+
 
 
 class _CustomSliverAppBar extends StatelessWidget {
