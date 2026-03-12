@@ -1,11 +1,15 @@
 class Actor {
+  final int id;
   final String name;
-  final int age;
-  final String nationality;
+  final String placeOfBirth;
+  final String? profilePath;
+  final String? biography;
 
   Actor({
+    required this.id,
     required this.name,
-    required this.age,
-    required this.nationality,
+    required this.placeOfBirth,
+    this.profilePath,
+    this.biography,
   });
 }

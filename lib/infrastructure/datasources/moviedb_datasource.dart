@@ -1,7 +1,11 @@
 import 'package:cinemapedia/config/constants/environment.dart';
+import 'package:cinemapedia/domain/entities/cast.dart';  // ← AÑADE ESTO
+
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/infrastructure/mappers/cast_mapper.dart';
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/actordb_response.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart';
 import 'package:dio/dio.dart';
@@ -21,7 +25,7 @@ class MoviedbDatasource extends MoviesDatasource {
   Future<List<Movie>> getNowPlaying({int page = 1}) async{ 
 
     final Response response = await dio.get('/movie/now_playing', queryParameters: {
-      'page': page,
+      'page': page, 
     });
     List<Movie> movies = _jsonToMovies(response); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
     
@@ -78,6 +82,15 @@ class MoviedbDatasource extends MoviesDatasource {
     final movieDb = MovieDetails.fromJson(response.data); // Si la respuesta no es exitosa, lanzar una excepción indicando que la película con el ID especificado no se encontró.
     final Movie movie = MovieMapper.fromMovieDetailsDBToEntity(movieDb);
     return movie;
+  }
+
+  @override
+  Future<List<Cast>> getActorsByMovie(String movieId) async {
+    final Response response = await dio.get('/movie/$movieId/credits');
+    if (response.statusCode != 200) throw Exception('Actors for movie with id: $movieId not found');
+    final actorsDbResponse = ActorDbResponse.fromJson(response.data);
+    final List<Cast> actors = actorsDbResponse.cast.map((castMovie) => CastMapper.fromCastDBToEntity(castMovie)).toList(); // Mapear cada ActorActorDb a Actor usando el MovieMapper
+    return actors;
   }
 
 

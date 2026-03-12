@@ -1,3 +1,4 @@
+import 'package:cinemapedia/domain/entities/cast.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 
 abstract class MoviesDatasource {
@@ -6,5 +7,5 @@ abstract class MoviesDatasource {
   Future<List<Movie>> getTopRated({int page = 1});
   Future<List<Movie>> getUpcoming({int page = 1});
   Future<Movie> getMovieById(String id);
-  Future<List<Actor>> getActorsByMovie(String movieId);
+  Future<List<Cast>> getActorsByMovie(String movieId);
 }

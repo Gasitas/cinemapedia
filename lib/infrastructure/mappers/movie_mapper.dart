@@ -40,4 +40,5 @@ class MovieMapper {
         voteAverage: movieDetails.voteAverage,
         voteCount: movieDetails.voteCount,
       );
+
 }
