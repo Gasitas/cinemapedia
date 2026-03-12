@@ -78,7 +78,9 @@ class CastMovie {
         character: json["character"],
         creditId: json["credit_id"],
         order: json["order"],
-        department: departmentValues.map[json["department"]]!,
+        department: (json["department"] as String?) != null 
+          ? departmentValues.map[json["department"]]! 
+          : Department.acting,
         job: json["job"],
     );
 

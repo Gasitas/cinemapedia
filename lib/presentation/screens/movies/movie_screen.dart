@@ -1,5 +1,5 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,7 +19,9 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(movieInfoProvider.notifier).loadMovie(widget.moveiId); // Cargamos los detalles de la película utilizando el provider movieProvider. Esto se hace llamando al método loadMovie() del MovieNotifier a través del provider movieProvider, pasando el ID de la película que se obtiene de widget.moveiId. De esta manera, cuando se muestre la pantalla, ya se tendrán cargados los detalles de la película para mostrar al usuario.
+    ref.read(movieInfoProvider.notifier).loadMovie(widget.moveiId);
+    print('🔄 Cargando casts para movieId: ${widget.moveiId}');
+    ref.read(getCast.notifier).loadMovieCast(widget.moveiId); // Cargamos los detalles de la película utilizando el provider movieProvider. Esto se hace llamando al método loadMovie() del MovieNotifier a través del provider movieProvider, pasando el ID de la película que se obtiene de widget.moveiId. De esta manera, cuando se muestre la pantalla, ya se tendrán cargados los detalles de la película para mostrar al usuario.
     // Aquí podríamos cargar los detalles de la película utilizando el widget.moveiId para obtener la información de la película desde una API o una base de datos. Esto se haría típicamente utilizando un provider o un state management para manejar el estado de la película y actualizar la UI en consecuencia.
   }
 
@@ -33,6 +35,9 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
+
+    final casts = ref.watch(getCast);
+    print('📋 Casts: ${casts.map((c) => c.name).toList()}'); 
     return Scaffold(
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
