@@ -6,38 +6,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
-
   static const name = 'movie-screen';
-  
+
   final String moveiId;
   const MovieScreen({super.key, required this.moveiId});
 
   @override
-  MovieScreenState   createState() => MovieScreenState();
+  MovieScreenState createState() => MovieScreenState();
 }
 
 class MovieScreenState extends ConsumerState<MovieScreen> {
-
   @override
   void initState() {
     super.initState();
     ref.read(movieInfoProvider.notifier).loadMovie(widget.moveiId);
-    print('🔄 Cargando casts para movieId: ${widget.moveiId}');
-    ref.read(getCast.notifier).loadMovieCast(widget.moveiId); // Cargamos los detalles de la película utilizando el provider movieProvider. Esto se hace llamando al método loadMovie() del MovieNotifier a través del provider movieProvider, pasando el ID de la película que se obtiene de widget.moveiId. De esta manera, cuando se muestre la pantalla, ya se tendrán cargados los detalles de la película para mostrar al usuario.
+    //print('🔄 Cargando casts para movieId: ${widget.moveiId}');
+    ref
+        .read(getCast.notifier)
+        .loadMovieCast(
+          widget.moveiId,
+        ); // Cargamos los detalles de la película utilizando el provider movieProvider. Esto se hace llamando al método loadMovie() del MovieNotifier a través del provider movieProvider, pasando el ID de la película que se obtiene de widget.moveiId. De esta manera, cuando se muestre la pantalla, ya se tendrán cargados los detalles de la película para mostrar al usuario.
     // Aquí podríamos cargar los detalles de la película utilizando el widget.moveiId para obtener la información de la película desde una API o una base de datos. Esto se haría típicamente utilizando un provider o un state management para manejar el estado de la película y actualizar la UI en consecuencia.
   }
 
   @override
   Widget build(BuildContext context) {
-
     final Movie? actualMovie = ref.watch(movieInfoProvider)[widget.moveiId];
-    
-    if (actualMovie == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
 
+    if (actualMovie == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       body: CustomScrollView(
@@ -49,10 +47,9 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
               (context, index) => _MovieDetails(actualMovie),
               childCount: 1,
             ),
-
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 }
@@ -61,11 +58,8 @@ class _MovieDetails extends ConsumerWidget {
   final Movie movie;
   const _MovieDetails(this.movie);
 
-  
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final size = MediaQuery.of(context).size;
     final textStyles = Theme.of(context).textTheme;
     final cast = ref.watch(getCast);
@@ -78,37 +72,53 @@ class _MovieDetails extends ConsumerWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(movie.posterPath, width: size.width * 0.3,)),
+                child: Image.network(movie.posterPath, width: size.width * 0.3),
+              ),
               //Padding(padding: EdgeInsets.all(8)),
               Container(
                 padding: const EdgeInsets.only(left: 10),
-                width: (size.width-40) *0.7,
+                width: (size.width - 40) * 0.7,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 40),
+                    Text(
+                      'Original title: ${movie.originalTitle}',
+                      style: textStyles.bodyMedium,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Release year: ${movie.releaseDate.toString().split('-').first}',
+                      style: textStyles.bodyMedium,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Original language: ${movie.originalLanguage}',
+                      style: textStyles.bodyMedium,
+                    ),
                     //Text(movie.title, style: textStyles.headlineSmall, maxLines: 2, overflow: TextOverflow.ellipsis,),
-                    Text(movie.overview, style: textStyles.bodyMedium),
+                    // Text(movie.overview, style: textStyles.bodyMedium),
                   ],
                 ),
-              )
-
+              ),
             ],
           ),
 
-          
-          Padding(padding:  EdgeInsets.all(8),
-          child: Wrap(
-            spacing: 10,
-            children: [
-              ...movie.genreIds.map((genre) => Chip(label: Text(genre))),
-            ],
-          ),),
-          const SizedBox(height: 10,),
-          const Text('Reparto', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10,),
+          const SizedBox(height: 10),
+          const Text(
+            'Sinopsis',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Text(movie.overview, style: textStyles.bodyMedium),
+
+          const SizedBox(height: 10),
+          const Text(
+            'Reparto',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
           SizedBox(
             height: 140,
             child: ListView.builder(
@@ -117,25 +127,28 @@ class _MovieDetails extends ConsumerWidget {
               itemBuilder: (context, index) => _ActorCard(actor: cast[index]),
             ),
           ),
+          SizedBox(height: 50),
         ],
       ),
     );
   }
 }
+
 class _ActorCard extends StatelessWidget {
   final Cast actor;
   const _ActorCard({required this.actor});
 
   @override
-  Widget build(BuildContext context) {
-    final hasPhoto = actor.profilePath != null && actor.profilePath!.isNotEmpty;
+  @override
+Widget build(BuildContext context) {
+  final hasPhoto = actor.profilePath != null && actor.profilePath!.isNotEmpty;
+  final imageUrl = hasPhoto ? 'https://image.tmdb.org/t/p/w500${actor.profilePath}' : null;
 
-    final imageUrl = hasPhoto
-        ? 'https://image.tmdb.org/t/p/w500${actor.profilePath}' // ← clave
-        : null;
-
-    return FadeIn(
+  return SizedBox(  // ← Envuelve para ancho fijo
+    width: 90,  // ← Ancho total fijo (imagen 70 + padding)
+    child: FadeIn(
       child: Column(
+        mainAxisSize: MainAxisSize.min,  // ← Minimiza altura
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -143,50 +156,80 @@ class _ActorCard extends StatelessWidget {
                 ? Image.network(
                     imageUrl,
                     height: 100,
-                    width: 90,
+                    width: 70,  // ← Reduce imagen para padding nombre
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.person, size: 60),
+                    errorBuilder: (_, _, _) => const Icon(Icons.person, size: 60),
                   )
                 : const SizedBox(
                     height: 100,
-                    width: 90,
+                    width: 70,
                     child: Icon(Icons.person, size: 60),
                   ),
           ),
-          Text(actor.name,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),  // ← Padding interno
+            child: Text(
+              actor.name,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }
 
-
+}
 
 class _CustomSliverAppBar extends StatelessWidget {
-
   final Movie movie;
-  const _CustomSliverAppBar(
-    this.movie,
-  );
+  const _CustomSliverAppBar(this.movie);
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
-    
+
     return SliverAppBar(
       backgroundColor: Colors.black,
-      expandedHeight: size.height*0.3,
+      expandedHeight: size.height * 0.3,
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        title: Text(movie.title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-          textAlign: TextAlign.start,
+        titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                movie.title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+            Row(
+              // ← Agrupa estrellas juntas sin espacio extra
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.star_border_outlined,
+                  color: Color.fromARGB(255, 231, 200, 3),
+                ),
+                Text(
+                  movie.voteAverage.toStringAsFixed(1), // ← Formato fijo
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
         background: Stack(
           children: [
@@ -203,26 +246,25 @@ class _CustomSliverAppBar extends StatelessWidget {
                 },
               ),
             ),
-                SizedBox.expand(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black87,
-                          Colors.transparent,
-                          Colors.transparent,
-                          Colors.white,
-                        ],
-                        stops: const [ 0, 0.3, 0.5, 1],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )
-                    ),
+            SizedBox.expand(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black87,
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black87,
+                    ],
+                    stops: const [0, 0.3, 0.5, 1],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
                 ),
-
-
-          ],),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
