@@ -83,6 +83,16 @@ class MoviedbDatasource extends MoviesDatasource {
     final Movie movie = MovieMapper.fromMovieDetailsDBToEntity(movieDb);
     return movie;
   }
+  @override
+  Future <List<Movie>> searchMovies(String query) async {
+    
+  final Response response = await dio.get('/search/movie', queryParameters: {
+    'query': query,
+  });
+  List<Movie> movies = _jsonToMovies(response); // Mapear cada MovieMovieDB a Movie usando el MovieMapper 
+
+  return movies;  
+  }
 
   @override
   Future<List<Cast>> getActorsByMovie(String movieId) async {
@@ -92,6 +102,8 @@ class MoviedbDatasource extends MoviesDatasource {
     final List<Cast> actors = actorsDbResponse.cast.map((castMovie) => CastMapper.fromCastDBToEntity(castMovie)).toList(); // Mapear cada ActorActorDb a Actor usando el MovieMapper
     return actors;
   }
+
+
 
 
 }

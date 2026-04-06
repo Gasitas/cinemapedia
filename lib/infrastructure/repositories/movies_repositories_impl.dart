@@ -41,5 +41,10 @@ class MoviesRepositoriesImpl extends MoviesRepository {
     return datasource.getActorsByMovie(movieId); // Delegar la llamada al datasource para obtener los actores de una película por su ID
   }
 
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
+    return datasource.searchMovies(query); // Delegar la llamada al datasource para buscar filmer por su query
+  }
+
 
 }
